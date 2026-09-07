@@ -7,6 +7,7 @@ import ActivityRow from "@/components/ActivityRow";
 import StatCard from "@/components/StatCard";
 import ProgressBar from "@/components/ProgressBar";
 import { Activity, DashboardSummary, api } from "@/lib/api";
+import { useCategoryColors } from "@/lib/useCategoryColors";
 
 function todayIso() {
   return new Date().toISOString().slice(0, 10);
@@ -17,6 +18,7 @@ export default function DashboardPage() {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Activity | undefined>(undefined);
   const [loading, setLoading] = useState(true);
+  const categoryColors = useCategoryColors();
 
   const today = todayIso();
 
@@ -94,6 +96,7 @@ export default function DashboardPage() {
             <ActivityRow
               key={activity.id}
               activity={activity}
+              categoryColor={categoryColors[activity.category]}
               onEdit={() => {
                 setEditing(activity);
                 setShowForm(true);

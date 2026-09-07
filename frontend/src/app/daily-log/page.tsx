@@ -7,11 +7,13 @@ import ActivityForm from "@/components/ActivityForm";
 import ActivityRow from "@/components/ActivityRow";
 import { Activity, api } from "@/lib/api";
 import { todayIso } from "@/lib/date";
+import { useCategoryColors } from "@/lib/useCategoryColors";
 
 function DailyLogContent() {
   const searchParams = useSearchParams();
   const [date, setDate] = useState(searchParams.get("date") ?? todayIso());
   const [activities, setActivities] = useState<Activity[]>([]);
+  const categoryColors = useCategoryColors();
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Activity | undefined>(undefined);
   const [loading, setLoading] = useState(true);
@@ -74,6 +76,7 @@ function DailyLogContent() {
             <ActivityRow
               key={activity.id}
               activity={activity}
+              categoryColor={categoryColors[activity.category]}
               onEdit={() => {
                 setEditing(activity);
                 setShowForm(true);

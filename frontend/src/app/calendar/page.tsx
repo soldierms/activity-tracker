@@ -4,17 +4,12 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import RequireAuth from "@/components/RequireAuth";
 import { Activity, api } from "@/lib/api";
+import { dotClass } from "@/lib/colors";
 import { monthGrid, toIso, todayIso } from "@/lib/date";
+import { useCategoryColors } from "@/lib/useCategoryColors";
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
-function intensityClass(hours: number): string {
-  if (hours === 0) return "bg-white";
-  if (hours < 1) return "bg-indigo-50";
-  if (hours < 3) return "bg-indigo-100";
-  if (hours < 5) return "bg-indigo-200";
-  return "bg-indigo-300";
-}
+const MAX_DOTS = 4;
 
 export default function CalendarPage() {
   const router = useRouter();
@@ -23,6 +18,7 @@ export default function CalendarPage() {
   const [month, setMonth] = useState(now.getMonth());
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
+  const categoryColors = useCategoryColors();
 
   const days = useMemo(() => monthGrid(year, month), [year, month]);
   const today = todayIso();
@@ -38,11 +34,12 @@ export default function CalendarPage() {
   }, [days]);
 
   const byDate = useMemo(() => {
-    const map = new Map<string, { hours: number; count: number }>();
+    const map = new Map<string, { hours: number; count: number; categories: string[] }>();
     for (const a of activities) {
-      const entry = map.get(a.date) ?? { hours: 0, count: 0 };
+      const entry = map.get(a.date) ?? { hours: 0, count: 0, categories: [] };
       entry.hours += a.duration_minutes / 60;
       entry.count += 1;
+      if (!entry.categories.includes(a.category)) entry.categories.push(a.category);
       map.set(a.date, entry);
     }
     return map;
@@ -102,21 +99,39 @@ export default function CalendarPage() {
               const iso = toIso(d);
               const inMonth = d.getMonth() === month;
               const info = byDate.get(iso);
+              const shownCategories = info?.categories.slice(0, MAX_DOTS) ?? [];
+              const overflow = (info?.categories.length ?? 0) - shownCategories.length;
               return (
                 <button
                   key={iso}
                   onClick={() => router.push(`/daily-log?date=${iso}`)}
                   className={`flex h-20 flex-col items-start rounded-md border p-2 text-left transition ${
-                    inMonth ? intensityClass(info?.hours ?? 0) : "bg-slate-50 text-slate-300"
+                    inMonth ? "bg-white" : "bg-slate-50 text-slate-300"
                   } ${iso === today ? "border-indigo-500" : "border-slate-100"} hover:border-indigo-400`}
                 >
                   <span className={`text-xs ${inMonth ? "text-slate-700" : "text-slate-300"}`}>
                     {d.getDate()}
                   </span>
                   {info && inMonth && (
-                    <span className="mt-auto text-xs font-medium text-indigo-700">
-                      {info.hours.toFixed(1)}h · {info.count}
-                    </span>
+                    <>
+                      <span className="mt-1 flex items-center gap-1">
+                        {shownCategories.map((cat) => (
+                          <span
+                            key={cat}
+                            title={cat}
+                            className={`h-2 w-2 rounded-full ${dotClass(categoryColors[cat] ?? "slate")}`}
+                          />
+                        ))}
+                        {overflow > 0 && (
+                          <span className="text-[10px] leading-none text-slate-400">
+                            +{overflow}
+                          </span>
+                        )}
+                      </span>
+                      <span className="mt-auto text-xs font-medium text-indigo-700">
+                        {info.hours.toFixed(1)}h · {info.count}
+                      </span>
+                    </>
                   )}
                 </button>
               );

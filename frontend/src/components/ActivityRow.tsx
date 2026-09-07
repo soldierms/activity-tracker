@@ -1,6 +1,7 @@
 "use client";
 
 import { Activity } from "@/lib/api";
+import { dotClass } from "@/lib/colors";
 
 const STATUS_ICON: Record<Activity["status"], string> = {
   completed: "✓",
@@ -10,10 +11,12 @@ const STATUS_ICON: Record<Activity["status"], string> = {
 
 export default function ActivityRow({
   activity,
+  categoryColor,
   onEdit,
   onDelete,
 }: {
   activity: Activity;
+  categoryColor?: string;
   onEdit: () => void;
   onDelete: () => void;
 }) {
@@ -31,7 +34,8 @@ export default function ActivityRow({
         </span>
         <div>
           <p className="text-sm font-medium text-slate-800">{activity.title}</p>
-          <p className="text-xs text-slate-500">
+          <p className="flex items-center gap-1.5 text-xs text-slate-500">
+            <span className={`h-2 w-2 rounded-full ${dotClass(categoryColor ?? "slate")}`} />
             {activity.category} · {hours} hrs
           </p>
         </div>
