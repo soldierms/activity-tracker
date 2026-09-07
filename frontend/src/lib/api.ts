@@ -133,6 +133,16 @@ export const api = {
       body: JSON.stringify({ email, password }),
     }),
   me: () => request<{ id: string; name: string; email: string }>("/auth/me"),
+  updateProfile: (name: string, email: string) =>
+    request<{ id: string; name: string; email: string }>("/auth/me", {
+      method: "PATCH",
+      body: JSON.stringify({ name, email }),
+    }),
+  changePassword: (currentPassword: string, newPassword: string) =>
+    request<void>("/auth/change-password", {
+      method: "POST",
+      body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }),
+    }),
 
   dashboard: (date?: string) =>
     request<DashboardSummary>(`/dashboard${date ? `?date=${date}` : ""}`),

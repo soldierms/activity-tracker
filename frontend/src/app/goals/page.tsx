@@ -36,7 +36,7 @@ export default function GoalsPage() {
     <RequireAuth>
       <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-8">
         <div className="flex items-center justify-between">
-          <h1 className="text-lg font-semibold text-slate-900">Goals</h1>
+          <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Goals</h1>
           <button
             onClick={() => {
               setEditing(undefined);
@@ -48,19 +48,19 @@ export default function GoalsPage() {
           </button>
         </div>
 
-        {loading && <p className="mt-6 text-center text-sm text-slate-400">Loading...</p>}
+        {loading && <p className="mt-6 text-center text-sm text-slate-400 dark:text-slate-500">Loading...</p>}
 
         {!loading && goals.length === 0 && (
-          <p className="mt-6 text-center text-sm text-slate-400">No goals yet.</p>
+          <p className="mt-6 text-center text-sm text-slate-400 dark:text-slate-500">No goals yet.</p>
         )}
 
         <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
           {goals.map((goal) => (
-            <div key={goal.id} className="rounded-xl border border-slate-200 bg-white p-4">
+            <div key={goal.id} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="font-medium text-slate-800">{goal.title}</p>
-                  <p className="text-xs text-slate-500">
+                  <p className="font-medium text-slate-800 dark:text-slate-100">{goal.title}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
                     {PERIOD_LABEL[goal.period]}
                     {goal.deadline ? ` · due ${goal.deadline}` : ""}
                     {goal.achieved_at
@@ -83,7 +83,7 @@ export default function GoalsPage() {
 
               <div className="mt-3">
                 <ProgressBar percent={(goal.progress / goal.target) * 100} />
-                <p className="mt-1 text-xs text-slate-500">
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                   {goal.progress} / {goal.target}
                 </p>
               </div>
@@ -94,13 +94,13 @@ export default function GoalsPage() {
                     setEditing(goal);
                     setShowForm(true);
                   }}
-                  className="text-slate-400 hover:text-indigo-600"
+                  className="text-slate-400 dark:text-slate-500 hover:text-indigo-600"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDelete(goal.id)}
-                  className="text-slate-400 hover:text-red-600"
+                  className="text-slate-400 dark:text-slate-500 hover:text-red-600"
                 >
                   Delete
                 </button>

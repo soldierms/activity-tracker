@@ -39,18 +39,18 @@ function DailyLogContent() {
     <RequireAuth>
       <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-8">
         <div className="flex items-center justify-between">
-          <h1 className="text-lg font-semibold text-slate-900">Daily Log</h1>
+          <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Daily Log</h1>
           <input
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="rounded-md border border-slate-300 px-3 py-1.5 text-sm focus:border-indigo-500 focus:outline-none"
+            className="rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-1.5 text-sm text-slate-900 dark:text-slate-100 focus:border-indigo-500 focus:outline-none"
           />
         </div>
 
-        <div className="mt-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="mt-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
           <div className="mb-2 flex items-center justify-between">
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-500 dark:text-slate-400">
               {activities.length} activities · {totalHours.toFixed(1)} hrs logged
             </p>
             <button
@@ -64,10 +64,10 @@ function DailyLogContent() {
             </button>
           </div>
 
-          {loading && <p className="py-6 text-center text-sm text-slate-400">Loading...</p>}
+          {loading && <p className="py-6 text-center text-sm text-slate-400 dark:text-slate-500">Loading...</p>}
 
           {!loading && activities.length === 0 && (
-            <p className="py-6 text-center text-sm text-slate-400">
+            <p className="py-6 text-center text-sm text-slate-400 dark:text-slate-500">
               No activities logged for this date.
             </p>
           )}

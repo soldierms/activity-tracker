@@ -14,7 +14,7 @@ const COLUMNS: { status: TaskStatus; label: string }[] = [
 const PRIORITY_COLOR: Record<Task["priority"], string> = {
   high: "text-red-600 bg-red-50",
   medium: "text-amber-600 bg-amber-50",
-  low: "text-slate-500 bg-slate-100",
+  low: "text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700",
 };
 
 export default function TasksPage() {
@@ -50,7 +50,7 @@ export default function TasksPage() {
     <RequireAuth>
       <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-8">
         <div className="flex items-center justify-between">
-          <h1 className="text-lg font-semibold text-slate-900">Tasks</h1>
+          <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Tasks</h1>
           <button
             onClick={() => {
               setEditing(undefined);
@@ -62,12 +62,12 @@ export default function TasksPage() {
           </button>
         </div>
 
-        {loading && <p className="mt-6 text-center text-sm text-slate-400">Loading...</p>}
+        {loading && <p className="mt-6 text-center text-sm text-slate-400 dark:text-slate-500">Loading...</p>}
 
         <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
           {COLUMNS.map((col) => (
-            <div key={col.status} className="rounded-xl border border-slate-200 bg-white p-4">
-              <p className="mb-3 text-sm font-medium text-slate-700">
+            <div key={col.status} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4">
+              <p className="mb-3 text-sm font-medium text-slate-700 dark:text-slate-300">
                 {col.label} ({tasks.filter((t) => t.status === col.status).length})
               </p>
               <div className="space-y-2">
@@ -76,12 +76,12 @@ export default function TasksPage() {
                   .map((task) => (
                     <div
                       key={task.id}
-                      className="rounded-lg border border-slate-100 p-3 text-sm hover:border-slate-300"
+                      className="rounded-lg border border-slate-100 dark:border-slate-700 p-3 text-sm hover:border-slate-300 dark:border-slate-600"
                     >
                       <div className="flex items-start justify-between gap-2">
                         <button
                           onClick={() => cycleStatus(task)}
-                          className="text-left font-medium text-slate-800 hover:text-indigo-600"
+                          className="text-left font-medium text-slate-800 dark:text-slate-100 hover:text-indigo-600"
                           title="Click to advance status"
                         >
                           {task.title}
@@ -93,7 +93,7 @@ export default function TasksPage() {
                         </span>
                       </div>
                       {task.due_date && (
-                        <p className="mt-1 text-xs text-slate-500">Due {task.due_date}</p>
+                        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Due {task.due_date}</p>
                       )}
                       <div className="mt-2 flex gap-2 text-xs">
                         <button
@@ -101,13 +101,13 @@ export default function TasksPage() {
                             setEditing(task);
                             setShowForm(true);
                           }}
-                          className="text-slate-400 hover:text-indigo-600"
+                          className="text-slate-400 dark:text-slate-500 hover:text-indigo-600"
                         >
                           Edit
                         </button>
                         <button
                           onClick={() => handleDelete(task.id)}
-                          className="text-slate-400 hover:text-red-600"
+                          className="text-slate-400 dark:text-slate-500 hover:text-red-600"
                         >
                           Delete
                         </button>

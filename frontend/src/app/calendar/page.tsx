@@ -60,34 +60,34 @@ export default function CalendarPage() {
     <RequireAuth>
       <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-8">
         <div className="flex items-center justify-between">
-          <h1 className="text-lg font-semibold text-slate-900">{monthLabel}</h1>
+          <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{monthLabel}</h1>
           <div className="flex gap-2">
             <button
               onClick={() => {
                 setYear(now.getFullYear());
                 setMonth(now.getMonth());
               }}
-              className="rounded-md border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100"
+              className="rounded-md border border-slate-300 dark:border-slate-600 px-3 py-1.5 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
             >
               Today
             </button>
             <button
               onClick={() => goToMonth(-1)}
-              className="rounded-md border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100"
+              className="rounded-md border border-slate-300 dark:border-slate-600 px-3 py-1.5 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
             >
               ← Prev
             </button>
             <button
               onClick={() => goToMonth(1)}
-              className="rounded-md border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100"
+              className="rounded-md border border-slate-300 dark:border-slate-600 px-3 py-1.5 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
             >
               Next →
             </button>
           </div>
         </div>
 
-        <div className="mt-6 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-          <div className="grid grid-cols-7 gap-px text-center text-xs font-medium text-slate-500">
+        <div className="mt-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 shadow-sm">
+          <div className="grid grid-cols-7 gap-px text-center text-xs font-medium text-slate-500 dark:text-slate-400">
             {WEEKDAYS.map((w) => (
               <div key={w} className="py-2">
                 {w}
@@ -106,10 +106,10 @@ export default function CalendarPage() {
                   key={iso}
                   onClick={() => router.push(`/daily-log?date=${iso}`)}
                   className={`flex h-20 flex-col items-start rounded-md border p-2 text-left transition ${
-                    inMonth ? "bg-white" : "bg-slate-50 text-slate-300"
-                  } ${iso === today ? "border-indigo-500" : "border-slate-100"} hover:border-indigo-400`}
+                    inMonth ? "bg-white dark:bg-slate-800" : "bg-slate-50 dark:bg-slate-900 text-slate-300 dark:text-slate-600"
+                  } ${iso === today ? "border-indigo-500" : "border-slate-100 dark:border-slate-700"} hover:border-indigo-400`}
                 >
-                  <span className={`text-xs ${inMonth ? "text-slate-700" : "text-slate-300"}`}>
+                  <span className={`text-xs ${inMonth ? "text-slate-700 dark:text-slate-300" : "text-slate-300 dark:text-slate-600"}`}>
                     {d.getDate()}
                   </span>
                   {info && inMonth && (
@@ -123,7 +123,7 @@ export default function CalendarPage() {
                           />
                         ))}
                         {overflow > 0 && (
-                          <span className="text-[10px] leading-none text-slate-400">
+                          <span className="text-[10px] leading-none text-slate-400 dark:text-slate-500">
                             +{overflow}
                           </span>
                         )}
@@ -139,9 +139,9 @@ export default function CalendarPage() {
           </div>
         </div>
 
-        {loading && <p className="mt-4 text-center text-sm text-slate-400">Loading...</p>}
+        {loading && <p className="mt-4 text-center text-sm text-slate-400 dark:text-slate-500">Loading...</p>}
 
-        <p className="mt-4 text-xs text-slate-400">Click a day to view or add activities.</p>
+        <p className="mt-4 text-xs text-slate-400 dark:text-slate-500">Click a day to view or add activities.</p>
       </main>
     </RequireAuth>
   );

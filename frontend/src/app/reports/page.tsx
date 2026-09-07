@@ -31,25 +31,25 @@ export default function ReportsPage() {
     <RequireAuth>
       <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-8">
         <div className="flex items-center justify-between">
-          <h1 className="text-lg font-semibold text-slate-900">Weekly Report</h1>
+          <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Weekly Report</h1>
           <div className="flex items-center gap-2">
             <button
               onClick={() => shiftWeek(-1)}
-              className="rounded-md border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100"
+              className="rounded-md border border-slate-300 dark:border-slate-600 px-3 py-1.5 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
             >
               ← Prev week
             </button>
             {!isCurrentWeek && (
               <button
                 onClick={() => setWeekStart(toIso(mondayOf(new Date())))}
-                className="rounded-md border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100"
+                className="rounded-md border border-slate-300 dark:border-slate-600 px-3 py-1.5 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
               >
                 This week
               </button>
             )}
             <button
               onClick={() => shiftWeek(1)}
-              className="rounded-md border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100"
+              className="rounded-md border border-slate-300 dark:border-slate-600 px-3 py-1.5 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
             >
               Next week →
             </button>
@@ -57,12 +57,12 @@ export default function ReportsPage() {
         </div>
 
         {report && (
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             {formatShort(report.start_date)} – {formatShort(report.end_date)}
           </p>
         )}
 
-        {loading && <p className="mt-6 text-center text-sm text-slate-400">Loading...</p>}
+        {loading && <p className="mt-6 text-center text-sm text-slate-400 dark:text-slate-500">Loading...</p>}
 
         {report && !loading && (
           <>
@@ -73,37 +73,37 @@ export default function ReportsPage() {
               <StatCard label="Goals Achieved" value={`${report.goals_achieved}`} />
             </div>
 
-            <div className="mt-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-              <p className="mb-4 text-sm font-medium text-slate-700">Hours per day</p>
+            <div className="mt-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
+              <p className="mb-4 text-sm font-medium text-slate-700 dark:text-slate-300">Hours per day</p>
               <div className="flex items-end justify-between gap-2" style={{ height: 160 }}>
                 {report.hours_by_day.map((d) => (
                   <div key={d.date} className="flex flex-1 flex-col items-center gap-1">
-                    <span className="text-xs text-slate-500">{d.hours > 0 ? d.hours : ""}</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400">{d.hours > 0 ? d.hours : ""}</span>
                     <div
                       className="w-full max-w-10 rounded-t-md bg-indigo-500"
                       style={{
                         height: `${Math.max(4, (d.hours / maxDayHours) * 120)}px`,
                       }}
                     />
-                    <span className="text-xs text-slate-500">{formatWeekday(d.date)}</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400">{formatWeekday(d.date)}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="mt-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-              <p className="mb-4 text-sm font-medium text-slate-700">Activities by category</p>
+            <div className="mt-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
+              <p className="mb-4 text-sm font-medium text-slate-700 dark:text-slate-300">Activities by category</p>
               {report.hours_by_category.length === 0 && (
-                <p className="text-sm text-slate-400">No activities logged this week.</p>
+                <p className="text-sm text-slate-400 dark:text-slate-500">No activities logged this week.</p>
               )}
               <div className="space-y-3">
                 {report.hours_by_category.map((c) => (
                   <div key={c.category}>
                     <div className="mb-1 flex justify-between text-sm">
-                      <span className="capitalize text-slate-700">{c.category}</span>
-                      <span className="text-slate-500">{c.hours} hrs</span>
+                      <span className="capitalize text-slate-700 dark:text-slate-300">{c.category}</span>
+                      <span className="text-slate-500 dark:text-slate-400">{c.hours} hrs</span>
                     </div>
-                    <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+                    <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-700">
                       <div
                         className="h-full rounded-full bg-indigo-500"
                         style={{ width: `${(c.hours / maxCategoryHours) * 100}%` }}

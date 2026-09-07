@@ -43,7 +43,7 @@ export default function DashboardPage() {
   return (
     <RequireAuth>
       <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-8">
-        <h1 className="text-lg font-medium text-slate-500">
+        <h1 className="text-lg font-medium text-slate-500 dark:text-slate-400">
           {new Date().toLocaleDateString(undefined, {
             weekday: "long",
             year: "numeric",
@@ -52,8 +52,8 @@ export default function DashboardPage() {
           })}
         </h1>
 
-        <div className="mt-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <p className="mb-2 text-sm font-medium text-slate-700">Today&apos;s Progress</p>
+        <div className="mt-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
+          <p className="mb-2 text-sm font-medium text-slate-700 dark:text-slate-300">Today&apos;s Progress</p>
           <ProgressBar percent={progressPercent} />
 
           <div className="mt-6 flex gap-4">
@@ -70,9 +70,9 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="mt-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="mt-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
           <div className="mb-2 flex items-center justify-between">
-            <p className="text-sm font-medium text-slate-700">Today&apos;s Activities</p>
+            <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Today&apos;s Activities</p>
             <button
               onClick={() => {
                 setEditing(undefined);
@@ -84,10 +84,10 @@ export default function DashboardPage() {
             </button>
           </div>
 
-          {loading && <p className="py-6 text-center text-sm text-slate-400">Loading...</p>}
+          {loading && <p className="py-6 text-center text-sm text-slate-400 dark:text-slate-500">Loading...</p>}
 
           {!loading && totalCount === 0 && (
-            <p className="py-6 text-center text-sm text-slate-400">
+            <p className="py-6 text-center text-sm text-slate-400 dark:text-slate-500">
               Nothing logged yet today. Add your first activity.
             </p>
           )}

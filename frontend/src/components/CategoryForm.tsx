@@ -34,24 +34,24 @@ export default function CategoryForm({ initial, onSaved, onCancel }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 px-4">
-      <div className="w-full max-w-sm rounded-xl bg-white p-6 shadow-lg">
-        <h2 className="mb-4 text-lg font-semibold text-slate-900">
+      <div className="w-full max-w-sm rounded-xl bg-white dark:bg-slate-800 p-6 shadow-lg">
+        <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">
           {initial ? "Edit Category" : "Add Category"}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">Name</label>
+            <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Name</label>
             <input
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. side project"
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+              className="w-full rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:border-indigo-500 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700">Color</label>
+            <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">Color</label>
             <div className="flex flex-wrap gap-2">
               {CATEGORY_COLORS.map((c) => (
                 <button
@@ -73,7 +73,7 @@ export default function CategoryForm({ initial, onSaved, onCancel }: Props) {
             <button
               type="button"
               onClick={onCancel}
-              className="rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-600 hover:bg-slate-100"
+              className="rounded-md border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
             >
               Cancel
             </button>
