@@ -30,7 +30,15 @@ data "aws_iam_policy_document" "github_actions_assume_role" {
     condition {
       test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:${var.github_repository}:*"]
+      # GitHub's sub claim is normally "repo:<owner>/<repo>:...", but for an
+      # account/repo that's ever been renamed it becomes
+      # "repo:<owner>@<ownerId>/<repo>@<repoId>:..." instead (an immutable-ID
+      # form GitHub uses to stop trust from following a freed-up name to
+      # whoever claims it next). Match both forms.
+      values = [
+        "repo:${var.github_repository}:*",
+        "repo:${split("/", var.github_repository)[0]}@*/${split("/", var.github_repository)[1]}@*:*",
+      ]
     }
   }
 }
