@@ -1,9 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Activity, ActivityStatus, api } from "@/lib/api";
-
-const CATEGORIES = ["work", "learning", "personal", "health", "general"];
+import { useEffect, useState } from "react";
+import { Activity, ActivityStatus, Category, api } from "@/lib/api";
 
 interface Props {
   date: string;
@@ -14,12 +12,26 @@ interface Props {
 
 export default function ActivityForm({ date, initial, onSaved, onCancel }: Props) {
   const [title, setTitle] = useState(initial?.title ?? "");
-  const [category, setCategory] = useState(initial?.category ?? "general");
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [category, setCategory] = useState(initial?.category ?? "");
   const [durationMinutes, setDurationMinutes] = useState(initial?.duration_minutes ?? 30);
   const [status, setStatus] = useState<ActivityStatus>(initial?.status ?? "completed");
   const [notes, setNotes] = useState(initial?.description ?? "");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    api.listCategories().then((cats) => {
+      setCategories(cats);
+      if (!category && cats.length > 0) setCategory(cats[0].name);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const categoryOptions =
+    initial && !categories.some((c) => c.name === initial.category)
+      ? [{ id: "current", name: initial.category, color: "slate" }, ...categories]
+      : categories;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -71,9 +83,9 @@ export default function ActivityForm({ date, initial, onSaved, onCancel }: Props
                 onChange={(e) => setCategory(e.target.value)}
                 className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
               >
-                {CATEGORIES.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
+                {categoryOptions.map((c) => (
+                  <option key={c.id} value={c.name}>
+                    {c.name}
                   </option>
                 ))}
               </select>

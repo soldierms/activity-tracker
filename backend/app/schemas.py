@@ -130,6 +130,25 @@ class GoalOut(BaseModel):
     achieved_at: datetime | None
 
 
+# ---- Categories ----
+
+class CategoryCreate(BaseModel):
+    name: str
+    color: str = "slate"
+
+
+class CategoryUpdate(BaseModel):
+    name: str | None = None
+    color: str | None = None
+
+
+class CategoryOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: str
+    name: str
+    color: str
+
+
 # ---- Reports ----
 
 class DayHours(BaseModel):

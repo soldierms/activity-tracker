@@ -41,6 +41,16 @@ export default function Navbar() {
           </div>
         </div>
         <div className="flex items-center gap-3 text-sm">
+          <Link
+            href="/categories"
+            className={`rounded px-2 py-1 ${
+              pathname === "/categories"
+                ? "bg-indigo-100 text-indigo-700 font-medium"
+                : "text-slate-500 hover:text-slate-900"
+            }`}
+          >
+            ⚙ Categories
+          </Link>
           <span className="text-slate-600">👤 {user.name}</span>
           <button
             onClick={logout}

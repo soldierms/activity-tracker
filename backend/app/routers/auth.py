@@ -2,8 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.auth import create_access_token, get_current_user, hash_password, verify_password
+from app.constants import DEFAULT_CATEGORIES
 from app.database import get_db
-from app.models import User
+from app.models import Category, User
 from app.schemas import LoginRequest, SignupRequest, TokenResponse, UserOut
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -17,6 +18,11 @@ def signup(payload: SignupRequest, db: Session = Depends(get_db)):
 
     user = User(name=payload.name, email=payload.email, password_hash=hash_password(payload.password))
     db.add(user)
+    db.flush()
+
+    for name, color in DEFAULT_CATEGORIES:
+        db.add(Category(user_id=user.id, name=name, color=color))
+
     db.commit()
     db.refresh(user)
 

@@ -18,6 +18,12 @@ export interface Activity {
   status: ActivityStatus;
 }
 
+export interface Category {
+  id: string;
+  name: string;
+  color: string;
+}
+
 export interface Task {
   id: string;
   title: string;
@@ -158,6 +164,13 @@ export const api = {
 
   weeklyReport: (start?: string) =>
     request<WeeklyReport>(`/reports/weekly${start ? `?start=${start}` : ""}`),
+
+  listCategories: () => request<Category[]>("/categories"),
+  createCategory: (data: { name: string; color: string }) =>
+    request<Category>("/categories", { method: "POST", body: JSON.stringify(data) }),
+  updateCategory: (id: string, data: Partial<{ name: string; color: string }>) =>
+    request<Category>(`/categories/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+  deleteCategory: (id: string) => request<void>(`/categories/${id}`, { method: "DELETE" }),
 };
 
 export { ApiError };
