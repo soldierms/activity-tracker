@@ -92,6 +92,7 @@ class TaskOut(BaseModel):
     priority: TaskPriority
     status: TaskStatus
     due_date: date_type | None
+    completed_at: datetime | None
 
 
 # ---- Goals ----
@@ -126,6 +127,28 @@ class GoalOut(BaseModel):
     progress: float
     deadline: date_type | None
     status: GoalStatus
+
+
+# ---- Reports ----
+
+class DayHours(BaseModel):
+    date: date_type
+    hours: float
+
+
+class CategoryHours(BaseModel):
+    category: str
+    hours: float
+
+
+class WeeklyReport(BaseModel):
+    start_date: date_type
+    end_date: date_type
+    total_hours: float
+    activities_count: int
+    tasks_completed: int
+    hours_by_day: list[DayHours]
+    hours_by_category: list[CategoryHours]
 
 
 # ---- Dashboard ----

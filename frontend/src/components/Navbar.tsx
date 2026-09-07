@@ -7,8 +7,10 @@ import { useAuth } from "@/lib/auth-context";
 const links = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/daily-log", label: "Daily Log" },
+  { href: "/calendar", label: "Calendar" },
   { href: "/tasks", label: "Tasks" },
   { href: "/goals", label: "Goals" },
+  { href: "/reports", label: "Reports" },
 ];
 
 export default function Navbar() {

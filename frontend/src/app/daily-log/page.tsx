@@ -1,17 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import RequireAuth from "@/components/RequireAuth";
 import ActivityForm from "@/components/ActivityForm";
 import ActivityRow from "@/components/ActivityRow";
 import { Activity, api } from "@/lib/api";
+import { todayIso } from "@/lib/date";
 
-function todayIso() {
-  return new Date().toISOString().slice(0, 10);
-}
-
-export default function DailyLogPage() {
-  const [date, setDate] = useState(todayIso());
+function DailyLogContent() {
+  const searchParams = useSearchParams();
+  const [date, setDate] = useState(searchParams.get("date") ?? todayIso());
   const [activities, setActivities] = useState<Activity[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Activity | undefined>(undefined);
@@ -97,5 +96,13 @@ export default function DailyLogPage() {
         )}
       </main>
     </RequireAuth>
+  );
+}
+
+export default function DailyLogPage() {
+  return (
+    <Suspense>
+      <DailyLogContent />
+    </Suspense>
   );
 }

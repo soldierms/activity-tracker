@@ -25,6 +25,7 @@ export interface Task {
   priority: TaskPriority;
   status: TaskStatus;
   due_date: string | null;
+  completed_at: string | null;
 }
 
 export interface Goal {
@@ -46,6 +47,26 @@ export interface DashboardSummary {
   goals_achieved: number;
   goals_total: number;
   activities: Activity[];
+}
+
+export interface DayHours {
+  date: string;
+  hours: number;
+}
+
+export interface CategoryHours {
+  category: string;
+  hours: number;
+}
+
+export interface WeeklyReport {
+  start_date: string;
+  end_date: string;
+  total_hours: number;
+  activities_count: number;
+  tasks_completed: number;
+  hours_by_day: DayHours[];
+  hours_by_category: CategoryHours[];
 }
 
 class ApiError extends Error {
@@ -110,6 +131,8 @@ export const api = {
 
   listActivities: (date?: string) =>
     request<Activity[]>(`/activities${date ? `?date=${date}` : ""}`),
+  listActivitiesRange: (start: string, end: string) =>
+    request<Activity[]>(`/activities?start=${start}&end=${end}`),
   createActivity: (data: Partial<Activity>) =>
     request<Activity>("/activities", { method: "POST", body: JSON.stringify(data) }),
   updateActivity: (id: string, data: Partial<Activity>) =>
@@ -130,6 +153,9 @@ export const api = {
   updateGoal: (id: string, data: Partial<Goal>) =>
     request<Goal>(`/goals/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
   deleteGoal: (id: string) => request<void>(`/goals/${id}`, { method: "DELETE" }),
+
+  weeklyReport: (start?: string) =>
+    request<WeeklyReport>(`/reports/weekly${start ? `?start=${start}` : ""}`),
 };
 
 export { ApiError };

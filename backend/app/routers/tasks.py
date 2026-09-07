@@ -1,9 +1,11 @@
+from datetime import datetime
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.auth import get_current_user
 from app.database import get_db
-from app.models import Task, User
+from app.models import Task, TaskStatus, User
 from app.schemas import TaskCreate, TaskOut, TaskUpdate
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
@@ -26,6 +28,8 @@ def create_task(
     db: Session = Depends(get_db),
 ):
     task = Task(**payload.model_dump(), user_id=current_user.id)
+    if task.status == TaskStatus.completed:
+        task.completed_at = datetime.utcnow()
     db.add(task)
     db.commit()
     db.refresh(task)
@@ -43,7 +47,15 @@ def update_task(
     if not task or task.user_id != current_user.id:
         raise HTTPException(status_code=404, detail="Task not found")
 
-    for field, value in payload.model_dump(exclude_unset=True).items():
+    updates = payload.model_dump(exclude_unset=True)
+    if "status" in updates:
+        new_status = updates["status"]
+        if new_status == TaskStatus.completed and task.status != TaskStatus.completed:
+            task.completed_at = datetime.utcnow()
+        elif new_status != TaskStatus.completed and task.status == TaskStatus.completed:
+            task.completed_at = None
+
+    for field, value in updates.items():
         setattr(task, field, value)
 
     db.commit()
