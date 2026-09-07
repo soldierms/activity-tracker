@@ -127,6 +127,7 @@ class GoalOut(BaseModel):
     progress: float
     deadline: date_type | None
     status: GoalStatus
+    achieved_at: datetime | None
 
 
 # ---- Reports ----
@@ -147,6 +148,7 @@ class WeeklyReport(BaseModel):
     total_hours: float
     activities_count: int
     tasks_completed: int
+    goals_achieved: int
     hours_by_day: list[DayHours]
     hours_by_category: list[CategoryHours]
 

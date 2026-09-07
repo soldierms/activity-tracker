@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.auth import get_current_user
 from app.database import get_db
-from app.models import Activity, Task, User
+from app.models import Activity, Goal, Task, User
 from app.schemas import CategoryHours, DayHours, WeeklyReport
 
 router = APIRouter(prefix="/reports", tags=["reports"])
@@ -56,12 +56,24 @@ def weekly_report(
         .count()
     )
 
+    goals_achieved = (
+        db.query(Goal)
+        .filter(
+            Goal.user_id == current_user.id,
+            Goal.achieved_at.isnot(None),
+            Goal.achieved_at >= start_date,
+            Goal.achieved_at < end_date + timedelta(days=1),
+        )
+        .count()
+    )
+
     return WeeklyReport(
         start_date=start_date,
         end_date=end_date,
         total_hours=round(sum(hours_by_day_map.values()), 2),
         activities_count=len(activities),
         tasks_completed=tasks_completed,
+        goals_achieved=goals_achieved,
         hours_by_day=[
             DayHours(date=d, hours=round(h, 2)) for d, h in sorted(hours_by_day_map.items())
         ],

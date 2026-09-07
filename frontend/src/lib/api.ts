@@ -37,6 +37,7 @@ export interface Goal {
   progress: number;
   deadline: string | null;
   status: GoalStatus;
+  achieved_at: string | null;
 }
 
 export interface DashboardSummary {
@@ -65,6 +66,7 @@ export interface WeeklyReport {
   total_hours: number;
   activities_count: number;
   tasks_completed: number;
+  goals_achieved: number;
   hours_by_day: DayHours[];
   hours_by_category: CategoryHours[];
 }

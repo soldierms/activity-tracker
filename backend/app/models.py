@@ -103,6 +103,7 @@ class Goal(Base):
     progress: Mapped[float] = mapped_column(Float, default=0)
     deadline: Mapped[date_type | None] = mapped_column(Date, nullable=True)
     status: Mapped[GoalStatus] = mapped_column(Enum(GoalStatus), default=GoalStatus.active)
+    achieved_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     user: Mapped["User"] = relationship(back_populates="goals")

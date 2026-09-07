@@ -63,6 +63,9 @@ export default function GoalsPage() {
                   <p className="text-xs text-slate-500">
                     {PERIOD_LABEL[goal.period]}
                     {goal.deadline ? ` · due ${goal.deadline}` : ""}
+                    {goal.achieved_at
+                      ? ` · achieved ${new Date(goal.achieved_at).toLocaleDateString(undefined, { month: "short", day: "numeric" })}`
+                      : ""}
                   </p>
                 </div>
                 <span

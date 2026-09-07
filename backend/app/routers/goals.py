@@ -1,9 +1,11 @@
+from datetime import datetime
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.auth import get_current_user
 from app.database import get_db
-from app.models import Goal, User
+from app.models import Goal, GoalStatus, User
 from app.schemas import GoalCreate, GoalOut, GoalUpdate
 
 router = APIRouter(prefix="/goals", tags=["goals"])
@@ -26,6 +28,8 @@ def create_goal(
     db: Session = Depends(get_db),
 ):
     goal = Goal(**payload.model_dump(), user_id=current_user.id)
+    if goal.status == GoalStatus.achieved:
+        goal.achieved_at = datetime.utcnow()
     db.add(goal)
     db.commit()
     db.refresh(goal)
@@ -43,7 +47,15 @@ def update_goal(
     if not goal or goal.user_id != current_user.id:
         raise HTTPException(status_code=404, detail="Goal not found")
 
-    for field, value in payload.model_dump(exclude_unset=True).items():
+    updates = payload.model_dump(exclude_unset=True)
+    if "status" in updates:
+        new_status = updates["status"]
+        if new_status == GoalStatus.achieved and goal.status != GoalStatus.achieved:
+            goal.achieved_at = datetime.utcnow()
+        elif new_status != GoalStatus.achieved and goal.status == GoalStatus.achieved:
+            goal.achieved_at = None
+
+    for field, value in updates.items():
         setattr(goal, field, value)
 
     db.commit()

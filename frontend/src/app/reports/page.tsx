@@ -70,6 +70,7 @@ export default function ReportsPage() {
               <StatCard label="Total Hours" value={`${report.total_hours} hrs`} />
               <StatCard label="Activities" value={`${report.activities_count}`} />
               <StatCard label="Tasks Completed" value={`${report.tasks_completed}`} />
+              <StatCard label="Goals Achieved" value={`${report.goals_achieved}`} />
             </div>
 
             <div className="mt-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
