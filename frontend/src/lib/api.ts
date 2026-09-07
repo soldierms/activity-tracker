@@ -181,6 +181,11 @@ export const api = {
   updateCategory: (id: string, data: Partial<{ name: string; color: string }>) =>
     request<Category>(`/categories/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
   deleteCategory: (id: string) => request<void>(`/categories/${id}`, { method: "DELETE" }),
+
+  dailySummary: (date?: string) =>
+    request<{ summary: string }>(`/ai/daily-summary${date ? `?date=${date}` : ""}`, {
+      method: "POST",
+    }),
 };
 
 export { ApiError };

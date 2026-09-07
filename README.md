@@ -9,6 +9,22 @@ Personal activity, task, goal, and time tracker. Next.js frontend, FastAPI backe
 - Daily Log: browse/add/edit/delete activities by date
 - Tasks: kanban-style to-do / in-progress / completed board
 - Goals: daily/weekly/monthly/long-term goals with progress bars
+- Calendar view, category management, weekly reports
+- Settings: account (name/email/password), light/dark/system theme
+- AI Daily Summary ("Analyze My Day" on the dashboard) via Claude
+
+## AI features
+
+The dashboard's "Analyze My Day" button calls Anthropic's Claude API. To enable it,
+add your API key to `backend/.env` (create the file if it doesn't exist):
+
+```
+ANTHROPIC_API_KEY=sk-ant-...
+```
+
+Restart the backend after adding it. Without a key, the button shows a clear
+"not configured" message instead of failing silently — no other features are
+affected.
 
 ## Running locally
 
@@ -48,6 +64,6 @@ docker compose up --build
 ## Roadmap
 
 - Phase 2: calendar view, categories management, weekly/monthly reports
-- Phase 3: AI daily/weekly summaries, natural-language activity entry
+- Phase 3: AI daily summary (done) → weekly AI review, natural-language activity entry
 - Phase 4: Docker Compose → CI/CD → Terraform → AWS (ECS/RDS/S3/CloudFront)
 - Phase 5: EKS, Helm, observability

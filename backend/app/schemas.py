@@ -140,6 +140,12 @@ class GoalOut(BaseModel):
     achieved_at: datetime | None
 
 
+# ---- AI ----
+
+class AIDailySummaryResponse(BaseModel):
+    summary: str
+
+
 # ---- Categories ----
 
 class CategoryCreate(BaseModel):

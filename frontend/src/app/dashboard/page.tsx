@@ -6,7 +6,7 @@ import ActivityForm from "@/components/ActivityForm";
 import ActivityRow from "@/components/ActivityRow";
 import StatCard from "@/components/StatCard";
 import ProgressBar from "@/components/ProgressBar";
-import { Activity, DashboardSummary, api } from "@/lib/api";
+import { ApiError, Activity, DashboardSummary, api } from "@/lib/api";
 import { useCategoryColors } from "@/lib/useCategoryColors";
 
 function todayIso() {
@@ -19,6 +19,10 @@ export default function DashboardPage() {
   const [editing, setEditing] = useState<Activity | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const categoryColors = useCategoryColors();
+
+  const [aiSummary, setAiSummary] = useState<string | null>(null);
+  const [aiError, setAiError] = useState<string | null>(null);
+  const [aiLoading, setAiLoading] = useState(false);
 
   const today = todayIso();
 
@@ -38,6 +42,20 @@ export default function DashboardPage() {
   async function handleDelete(id: string) {
     await api.deleteActivity(id);
     refresh();
+  }
+
+  async function handleAnalyzeDay() {
+    setAiError(null);
+    setAiSummary(null);
+    setAiLoading(true);
+    try {
+      const { summary } = await api.dailySummary(today);
+      setAiSummary(summary);
+    } catch (err) {
+      setAiError(err instanceof ApiError ? err.message : "Could not generate a summary");
+    } finally {
+      setAiLoading(false);
+    }
   }
 
   return (
@@ -68,6 +86,28 @@ export default function DashboardPage() {
               value={`${summary?.goals_achieved ?? 0} / ${summary?.goals_total ?? 0}`}
             />
           </div>
+        </div>
+
+        <div className="mt-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
+              ✨ AI Daily Summary
+            </p>
+            <button
+              onClick={handleAnalyzeDay}
+              disabled={aiLoading}
+              className="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+            >
+              {aiLoading ? "Analyzing..." : "Analyze My Day"}
+            </button>
+          </div>
+
+          {aiSummary && (
+            <p className="mt-3 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+              {aiSummary}
+            </p>
+          )}
+          {aiError && <p className="mt-3 text-sm text-red-600">{aiError}</p>}
         </div>
 
         <div className="mt-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
