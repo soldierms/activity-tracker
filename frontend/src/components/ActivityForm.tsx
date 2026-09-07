@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Activity, ActivityStatus, Category, api } from "@/lib/api";
+import { Activity, ActivityStatus, ApiError, Category, api } from "@/lib/api";
 
 interface Props {
   date: string;
@@ -20,6 +20,10 @@ export default function ActivityForm({ date, initial, onSaved, onCancel }: Props
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [quickText, setQuickText] = useState("");
+  const [parsing, setParsing] = useState(false);
+  const [parseError, setParseError] = useState<string | null>(null);
+
   useEffect(() => {
     api.listCategories().then((cats) => {
       setCategories(cats);
@@ -32,6 +36,25 @@ export default function ActivityForm({ date, initial, onSaved, onCancel }: Props
     initial && !categories.some((c) => c.name === initial.category)
       ? [{ id: "current", name: initial.category, color: "slate" }, ...categories]
       : categories;
+
+  async function handleQuickAdd() {
+    if (!quickText.trim()) return;
+    setParseError(null);
+    setParsing(true);
+    try {
+      const parsed = await api.parseActivity(quickText);
+      setTitle(parsed.title);
+      setCategory(parsed.category);
+      setDurationMinutes(parsed.duration_minutes);
+      setStatus(parsed.status);
+      if (parsed.description) setNotes(parsed.description);
+      setQuickText("");
+    } catch (err) {
+      setParseError(err instanceof ApiError ? err.message : "Could not parse that");
+    } finally {
+      setParsing(false);
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -63,6 +86,37 @@ export default function ActivityForm({ date, initial, onSaved, onCancel }: Props
         <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100">
           {initial ? "Edit Activity" : "Add Activity"}
         </h2>
+        {!initial && (
+          <div className="mb-4 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900/40 p-3">
+            <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
+              ✨ Quick add
+            </label>
+            <div className="flex gap-2">
+              <input
+                value={quickText}
+                onChange={(e) => setQuickText(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleQuickAdd();
+                  }
+                }}
+                placeholder="e.g. worked on terraform for 2 hours"
+                className="w-full rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:border-indigo-500 focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={handleQuickAdd}
+                disabled={parsing || !quickText.trim()}
+                className="whitespace-nowrap rounded-md bg-indigo-600 px-3 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+              >
+                {parsing ? "Parsing..." : "Parse"}
+              </button>
+            </div>
+            {parseError && <p className="mt-2 text-sm text-red-600">{parseError}</p>}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
             <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Title</label>

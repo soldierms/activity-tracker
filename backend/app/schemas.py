@@ -146,6 +146,22 @@ class AIDailySummaryResponse(BaseModel):
     summary: str
 
 
+class AIWeeklyReviewResponse(BaseModel):
+    review: str
+
+
+class AIParseActivityRequest(BaseModel):
+    text: str
+
+
+class AIParseActivityResponse(BaseModel):
+    title: str
+    category: str
+    duration_minutes: float
+    status: ActivityStatus
+    description: str | None = None
+
+
 # ---- Categories ----
 
 class CategoryCreate(BaseModel):

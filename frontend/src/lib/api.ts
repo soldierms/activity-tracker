@@ -24,6 +24,14 @@ export interface Category {
   color: string;
 }
 
+export interface ParsedActivity {
+  title: string;
+  category: string;
+  duration_minutes: number;
+  status: ActivityStatus;
+  description: string | null;
+}
+
 export interface Task {
   id: string;
   title: string;
@@ -185,6 +193,15 @@ export const api = {
   dailySummary: (date?: string) =>
     request<{ summary: string }>(`/ai/daily-summary${date ? `?date=${date}` : ""}`, {
       method: "POST",
+    }),
+  weeklyReview: (start?: string) =>
+    request<{ review: string }>(`/ai/weekly-review${start ? `?start=${start}` : ""}`, {
+      method: "POST",
+    }),
+  parseActivity: (text: string) =>
+    request<ParsedActivity>("/ai/parse-activity", {
+      method: "POST",
+      body: JSON.stringify({ text }),
     }),
 };
 

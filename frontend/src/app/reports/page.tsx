@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import RequireAuth from "@/components/RequireAuth";
 import StatCard from "@/components/StatCard";
-import { WeeklyReport, api } from "@/lib/api";
+import { ApiError, WeeklyReport, api } from "@/lib/api";
 import { addDays, formatShort, formatWeekday, mondayOf, toIso } from "@/lib/date";
 
 export default function ReportsPage() {
@@ -11,13 +11,33 @@ export default function ReportsPage() {
   const [report, setReport] = useState<WeeklyReport | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const [aiReview, setAiReview] = useState<string | null>(null);
+  const [aiError, setAiError] = useState<string | null>(null);
+  const [aiLoading, setAiLoading] = useState(false);
+
   useEffect(() => {
     setLoading(true);
+    setAiReview(null);
+    setAiError(null);
     api
       .weeklyReport(weekStart)
       .then(setReport)
       .finally(() => setLoading(false));
   }, [weekStart]);
+
+  async function handleAiReview() {
+    setAiError(null);
+    setAiReview(null);
+    setAiLoading(true);
+    try {
+      const { review } = await api.weeklyReview(weekStart);
+      setAiReview(review);
+    } catch (err) {
+      setAiError(err instanceof ApiError ? err.message : "Could not generate a review");
+    } finally {
+      setAiLoading(false);
+    }
+  }
 
   function shiftWeek(deltaWeeks: number) {
     setWeekStart(toIso(addDays(new Date(`${weekStart}T00:00:00`), deltaWeeks * 7)));
@@ -71,6 +91,27 @@ export default function ReportsPage() {
               <StatCard label="Activities" value={`${report.activities_count}`} />
               <StatCard label="Tasks Completed" value={`${report.tasks_completed}`} />
               <StatCard label="Goals Achieved" value={`${report.goals_achieved}`} />
+            </div>
+
+            <div className="mt-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                  ✨ AI Weekly Review
+                </p>
+                <button
+                  onClick={handleAiReview}
+                  disabled={aiLoading}
+                  className="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+                >
+                  {aiLoading ? "Analyzing..." : "Generate Review"}
+                </button>
+              </div>
+              {aiReview && (
+                <p className="mt-3 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+                  {aiReview}
+                </p>
+              )}
+              {aiError && <p className="mt-3 text-sm text-red-600">{aiError}</p>}
             </div>
 
             <div className="mt-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
