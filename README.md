@@ -63,11 +63,33 @@ features are affected.
 docker compose up --build
 ```
 
-(Frontend service can be added to `docker-compose.yml` the same way once you're ready to containerize it for deployment.)
+Runs Postgres, the backend (`:8000`), and the frontend (`:3000`) together —
+the same three containers that would run in production. Set
+`ANTHROPIC_API_KEY` in your shell before running this if you want AI features
+inside the containers too.
+
+## CI/CD
+
+- `.github/workflows/ci.yml` — runs on every push/PR: frontend typecheck +
+  lint + build, backend import/health check against a real Postgres service
+  container. No AWS access needed.
+- `.github/workflows/deploy.yml` — runs on push to `main`: builds and pushes
+  both Docker images to ECR, then forces a new ECS deployment. Needs the AWS
+  infra to already exist (see `terraform/README.md`) and one repo secret,
+  `AWS_DEPLOY_ROLE_ARN`, set to the `github_actions_role_arn` Terraform
+  output. Authenticates via GitHub's OIDC provider — no long-lived AWS keys
+  stored in GitHub.
+
+## AWS deployment (Terraform)
+
+See [`terraform/README.md`](terraform/README.md) for the architecture,
+cost estimate, and deliberate simplifications (no NAT gateway, no domain/
+HTTPS yet, single-AZ RDS). `terraform apply` provisions real, billable AWS
+resources — nothing in this repo does that automatically.
 
 ## Roadmap
 
-- Phase 2: calendar view, categories management, weekly/monthly reports
-- Phase 3: AI daily summary, weekly AI review, natural-language activity entry (all done)
-- Phase 4: Docker Compose → CI/CD → Terraform → AWS (ECS/RDS/S3/CloudFront)
+- Phase 2: calendar view, categories management, weekly/monthly reports (done)
+- Phase 3: AI daily summary, weekly AI review, natural-language activity entry (done)
+- Phase 4: Docker Compose (done) → CI/CD (done) → Terraform (done, not yet applied) → AWS
 - Phase 5: EKS, Helm, observability

@@ -1,0 +1,6 @@
+aws_region   = "us-east-1"
+project_name = "activity-tracker"
+environment  = "production"
+
+# Optional — leave blank to deploy with AI features disabled.
+# anthropic_api_key = "sk-ant-..."
