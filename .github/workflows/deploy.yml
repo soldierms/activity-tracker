@@ -3,6 +3,7 @@ name: Deploy
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 # Requires the infra in terraform/ to already exist (terraform apply is a
 # manual, one-time step — see terraform/README.md) and one repo secret:
