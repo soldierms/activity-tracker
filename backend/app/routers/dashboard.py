@@ -8,7 +8,9 @@ from app.database import get_db
 from app.models import Activity, Goal, GoalStatus, Task, TaskStatus, User
 from app.schemas import DashboardSummary
 
-router = APIRouter(prefix="/dashboard", tags=["dashboard"])
+# Not "/dashboard" — the frontend has a page at that exact path, and in
+# production both are reached through the same ALB, routed by path.
+router = APIRouter(prefix="/dashboard-summary", tags=["dashboard"])
 
 
 @router.get("", response_model=DashboardSummary)

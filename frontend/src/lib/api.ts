@@ -153,7 +153,7 @@ export const api = {
     }),
 
   dashboard: (date?: string) =>
-    request<DashboardSummary>(`/dashboard${date ? `?date=${date}` : ""}`),
+    request<DashboardSummary>(`/dashboard-summary${date ? `?date=${date}` : ""}`),
 
   listActivities: (date?: string) =>
     request<Activity[]>(`/activities${date ? `?date=${date}` : ""}`),

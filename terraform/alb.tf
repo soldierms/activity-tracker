@@ -81,7 +81,7 @@ resource "aws_lb_listener_rule" "backend_api_2" {
 
   condition {
     path_pattern {
-      values = ["/dashboard", "/dashboard/*", "/reports/*", "/ai/*", "/health"]
+      values = ["/dashboard-summary", "/reports/*", "/ai/*", "/health"]
     }
   }
 }
