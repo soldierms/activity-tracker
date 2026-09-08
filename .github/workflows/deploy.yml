@@ -43,7 +43,10 @@ jobs:
           DNS=$(aws elbv2 describe-load-balancers \
             --names "${PROJECT_NAME}-alb" \
             --query 'LoadBalancers[0].DNSName' --output text)
-          echo "url=http://${DNS}" >> "$GITHUB_OUTPUT"
+          # /api, not the bare origin: the backend is only routed by the ALB
+          # under /api/* (see terraform/alb.tf), to avoid colliding with a
+          # frontend page of the same name as a bare backend route.
+          echo "url=http://${DNS}/api" >> "$GITHUB_OUTPUT"
 
       - name: Build and push backend image
         env:

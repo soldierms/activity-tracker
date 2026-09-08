@@ -50,11 +50,11 @@ resource "aws_lb_listener" "http" {
   }
 }
 
-# One condition value per top-level FastAPI router prefix (see
-# backend/app/main.py). Add a value below whenever a new router is mounted —
-# split across two rules because an ALB rule allows at most 5 condition
-# values.
-resource "aws_lb_listener_rule" "backend_api_1" {
+# The backend is also mounted under /api/* (see backend/app/main.py) so it
+# never collides with a frontend page of the same name as a bare backend
+# route (e.g. GET /categories the API vs /categories the frontend page —
+# hit exactly this in testing). One rule, forever — no per-router upkeep.
+resource "aws_lb_listener_rule" "backend_api" {
   listener_arn = aws_lb_listener.http.arn
   priority     = 100
 
@@ -65,23 +65,7 @@ resource "aws_lb_listener_rule" "backend_api_1" {
 
   condition {
     path_pattern {
-      values = ["/auth/*", "/categories/*", "/activities/*", "/tasks/*", "/goals/*"]
-    }
-  }
-}
-
-resource "aws_lb_listener_rule" "backend_api_2" {
-  listener_arn = aws_lb_listener.http.arn
-  priority     = 101
-
-  action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.backend.arn
-  }
-
-  condition {
-    path_pattern {
-      values = ["/dashboard-summary", "/reports/*", "/ai/*", "/health"]
+      values = ["/api/*"]
     }
   }
 }

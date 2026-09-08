@@ -104,7 +104,7 @@ resource "aws_ecs_service" "backend" {
     container_port   = 8000
   }
 
-  depends_on = [aws_lb_listener_rule.backend_api_1, aws_lb_listener_rule.backend_api_2]
+  depends_on = [aws_lb_listener_rule.backend_api]
 }
 
 resource "aws_ecs_service" "frontend" {

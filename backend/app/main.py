@@ -17,16 +17,21 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(auth.router)
-app.include_router(categories.router)
-app.include_router(activities.router)
-app.include_router(tasks.router)
-app.include_router(goals.router)
-app.include_router(dashboard.router)
-app.include_router(reports.router)
-app.include_router(ai.router)
+routers = [auth.router, categories.router, activities.router, tasks.router, goals.router, dashboard.router, reports.router, ai.router]
+
+for router in routers:
+    app.include_router(router)
+    # Also served under /api/*: in production the frontend and backend sit
+    # behind the same load balancer routed by path, and several backend
+    # routes (e.g. GET /categories, /tasks, /goals) sit at the exact same
+    # bare path as a frontend page of the same name. /api/* never collides
+    # with a frontend route, so that's what the ALB forwards to the backend
+    # (see terraform/alb.tf) and what NEXT_PUBLIC_API_URL points at in
+    # production. Local dev keeps hitting the bare paths directly.
+    app.include_router(router, prefix="/api")
 
 
 @app.get("/health")
+@app.get("/api/health")
 def health():
     return {"status": "ok"}
